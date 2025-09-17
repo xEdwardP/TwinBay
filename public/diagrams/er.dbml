@@ -1,0 +1,15 @@
+Table settings {
+    id int [pk, increment]
+    name varchar(255)
+    description text
+    branch varchar(150)
+    address varchar(255)
+    phone varchar(100)
+    logo varchar(255)
+    logo_auto varchar(255)
+    currency varchar(100)
+    email varchar(255)
+    website varchar(255)
+    created_at timestamp
+    updated_at timestamp
+}

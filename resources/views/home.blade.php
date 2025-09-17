@@ -1,9 +1,7 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
-
 @section('content_header')
-    <h1>Dashboard</h1>
+    <x-pages.page-header title="Inicio" :breadcrumbs="[['label' => 'Inicio', 'route' => 'home']]" icon="fas fa-fw fa-home" />
 @stop
 
 @section('content')
@@ -11,10 +9,7 @@
 @stop
 
 @section('css')
-    {{-- Add here extra stylesheets --}}
-    {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
 @stop
 
 @section('js')
-    <script> console.log("Hi, I'm using the Laravel-AdminLTE package!"); </script>
 @stop

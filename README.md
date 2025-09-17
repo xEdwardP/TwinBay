@@ -33,7 +33,7 @@ Sistema modular y escalable desarrollado en Laravel 12, diseñado para gestionar
 ### Clona el repositorio:
 
 ```bash
-  https://github.com/xEdwardP/TwinBay.git
+  git clone https://github.com/xEdwardP/TwinBay.git
   cd TwinBay
 ```
 

@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'TwinBay Parking',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>TwinBay</b> Parking',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -303,21 +303,21 @@ return [
             'type' => 'fullscreen-widget',
             'topnav_right' => true,
         ],
-        ['header' => 'Menu Principal'],
+        ['header' => 'main_navigation'],
         [
             'text' => 'Categorias',
-            'url' => 'admin/settings',
+            'url' => '#',
             'icon' => 'fas fa-fw fa-user',
         ],
-        ['header' => 'account_settings'],
+        ['header' => 'system_settings'],
         [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
+            'text' => 'settings',
+            'route' => 'settings.index',
+            'icon' => 'fas fa-fw fa-cog',
         ],
         [
             'text' => 'change_password',
-            'url' => 'admin/settings',
+            'url' => '#',
             'icon' => 'fas fa-fw fa-lock',
         ],
     ],
@@ -403,12 +403,17 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
+                    'asset' => true,
+                    'location' => 'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css',
                 ],
             ],
         ],

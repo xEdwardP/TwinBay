@@ -28,4 +28,6 @@ return [
     'purchases' => 'Compras',
     'customers' => 'Clientes',
     'suppliers' => 'Proveedores',
+    'roles' => 'Roles',
+    'users' => 'Usuarios',
 ];

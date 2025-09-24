@@ -93,6 +93,24 @@
                 }
             });
         }
+
+        function confirmRestore(event, itemId) {
+            event.preventDefault();
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: '¡Se restaurará el elemento seleccionado!',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, restaurar',
+                cancelButtonText: 'No, cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('restoreForm' + itemId).submit();
+                }
+            });
+        }
     </script>
 
     <script>

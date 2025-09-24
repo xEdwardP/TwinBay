@@ -18,6 +18,20 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->enum('document_type', ['DNI', 'Pasaporte', 'Licencia de conducir', 'Carnet de extranjero']);
+            $table->string('document_number', 50)->unique();
+            $table->string('phone', 20);
+            $table->date('birthday');
+            $table->enum('genre', ['Masculino', 'Femenino', 'Otro']);
+            $table->string('address');
+            $table->string('userphoto')->nullable();
+            $table->string('contact_name')->nullable();
+            $table->string('contact_phone', 20)->nullable();
+            $table->string('contact_relationship')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
 

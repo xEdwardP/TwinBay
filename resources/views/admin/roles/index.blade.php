@@ -70,50 +70,6 @@
 
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center">
-                                            {{-- <button type="button" class="btn btn-sm btn-warning rounded-pill px-4 py-1"
-                                                data-toggle="modal" data-target="#ModalEdit{{ $item->id }}"
-                                                title="Editar Rol">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </button>
-                                            <div class="modal fade" tabindex="-1" id="ModalEdit{{ $item->id }}"
-                                                aria-labelledby="" aria-hidden="true">
-                                                <div class="modal-dialog modal-md" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header bg-warning text-white">
-                                                            <h5 class="modal-title"><i
-                                                                    class="fa-solid fa-pen-to-square"></i>&nbsp;Edición de
-                                                                Rol</h5>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <form action="{{ route('roles.update', $item) }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                @method('PUT')
-                                                                <div class="form-row text-left">
-                                                                    <div class="form-group col-md-12 mb-2">
-                                                                        <x-ui.form.text-input name="name"
-                                                                            label="Nombre del Rol"
-                                                                            placeholder="Ej: Administrador"
-                                                                            icon="fas fa-user-shield" autofocus
-                                                                            maxlength="255" :value="old('name', $item->name ?? '')" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary"
-                                                                        data-dismiss="modal"><i
-                                                                            class="fa-solid fa-ban"></i>&nbsp;Cancelar</button>
-                                                                    <button type="submit" class="btn btn-primary"><i
-                                                                            class="fa-solid fa-floppy-disk"></i>&nbsp;Guardar</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
                                             <a href="{{ route('roles.edit', $item) }}"
                                                 class="btn btn-sm btn-info rounded-pill px-4 py-1" title="Asignar Permisos">
                                                 <i class="fa-solid fa-gear"></i>

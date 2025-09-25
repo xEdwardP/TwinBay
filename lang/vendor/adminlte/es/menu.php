@@ -30,4 +30,5 @@ return [
     'suppliers' => 'Proveedores',
     'roles' => 'Roles',
     'users' => 'Usuarios',
+    'spaces' => 'Espacios',
 ];

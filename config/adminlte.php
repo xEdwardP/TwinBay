@@ -309,6 +309,11 @@ return [
             'route' => 'home',
             'icon' => 'fas fa-fw fa-home',
         ],
+        [
+            'text' => 'spaces',
+            'route' => 'spaces.index',
+            'icon' => 'fas fa-fw fa-parking',
+        ],
         ['header' => 'system_settings'],
         [
             'text' => 'settings',

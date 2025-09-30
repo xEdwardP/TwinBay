@@ -75,7 +75,8 @@
                                                 <i class="fa-solid fa-gear"></i>
                                             </a>
                                             <a href="{{ route('roles.edit', $item) }}"
-                                                class="btn btn-sm btn-warning rounded-pill px-4 py-1" title="Editar Rol">
+                                                class="btn btn-sm btn-warning rounded-pill px-4 py-1 ml-2"
+                                                title="Editar Rol">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             <x-ui.button.delete-button :action="route('roles.destroy', $item->id)" :item-id="$item->id"

@@ -1,6 +1,7 @@
 @props([
     'disabled' => false,
-    'label',
+    'title' => 'Eliminar',
+    'label' => '',
 ])
 
 <form id="deleteForm{{ $itemId }}" action="{{ $action }}" method="POST" class="d-inline">

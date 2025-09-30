@@ -314,6 +314,11 @@ return [
             'route' => 'spaces.index',
             'icon' => 'fas fa-fw fa-parking',
         ],
+        [
+            'text' => 'Tarifas',
+            'route' => 'rates.index',
+            'icon' => 'fas fa-fw fa-dollar-sign',
+        ],
         ['header' => 'system_settings'],
         [
             'text' => 'settings',

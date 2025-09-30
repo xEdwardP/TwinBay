@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ParkingSpaceController;
+use App\Http\Controllers\RateController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -47,4 +48,14 @@ Route::prefix('admin/spaces')->controller(ParkingSpaceController::class)->middle
     // Route::get('/edit/{space}', 'edit')->name('spaces.edit');
     Route::put('/update/{id}', 'update')->name('spaces.update');
     Route::delete('/destroy/{space}', 'destroy')->name('spaces.destroy');
+});
+
+// Rates routes
+Route::prefix('admin/rates')->controller(RateController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'index')->name('rates.index');
+    Route::get('/create', 'create')->name('rates.create');
+    Route::post('/store', 'store')->name('rates.store');
+    Route::get('/edit/{rate}', 'edit')->name('rates.edit');
+    Route::put('/update/{rate}', 'update')->name('rates.update');
+    Route::delete('/destroy/{rate}', 'destroy')->name('rates.destroy');
 });

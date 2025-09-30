@@ -10,15 +10,11 @@ class DeleteButton extends Component
 {
     public $action;
     public $itemId;
-    public $label;
-    public $title;
 
-    public function __construct($action, $itemId, $label = 'Eliminar', $title = 'Eliminar')
+    public function __construct($action, $itemId)
     {
         $this->action = $action;
         $this->itemId = $itemId;
-        $this->label = $label;
-        $this->title = $title;
     }
 
     public function render(): View|Closure|string

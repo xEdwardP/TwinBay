@@ -46,7 +46,7 @@
                                                 Tarifa
                                                 Nocturna</option>
                                             <option value="fin de semana"
-                                                {{ old('name', $item->name) == 'fin_de_semana' ? 'selected' : '' }}>Tarifa
+                                                {{ old('name', $item->name) == 'fin de semana' ? 'selected' : '' }}>Tarifa
                                                 Fin de semana</option>
                                             <option value="feriados"
                                                 {{ old('name', $item->name) == 'feriados' ? 'selected' : '' }}>

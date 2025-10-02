@@ -42,11 +42,6 @@ class RoleController extends Controller
     public function update(RoleRequest $request, Role $role)
     {
         try {
-
-            // if ($request->name == $role->name) {
-            //     return to_route('roles.index')->with('success', 'Rol actualizado exitosamente.');
-            // }
-
             $validated = $request->validated();
             $validated['name'] = strtoupper($validated['name']);
             $role->update($validated);

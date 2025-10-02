@@ -48,7 +48,7 @@ class RateController extends Controller
         try {
             $rate->update($request->validated());
             return to_route('rates.index')->with('success', '¡La tarifa se ha actualizado exitosamente!');
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             return to_route('rates.index')->with('error', 'La tarifa no se pudo actualizar: ' . $e->getMessage());
         }
     }
@@ -58,7 +58,7 @@ class RateController extends Controller
         try {
             $rate->delete();
             return to_route('rates.index')->with('success', 'La tarifa se ha eliminado exitosamente!');
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             return to_route('rates.index')->with('error', 'La tarifa no se pudo eliminar: ' . $e->getMessage());
         }
     }

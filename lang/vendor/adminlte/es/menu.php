@@ -31,4 +31,6 @@ return [
     'roles' => 'Roles',
     'users' => 'Usuarios',
     'spaces' => 'Espacios',
+    'rates' => 'Tarifas',
+    'customers' => 'Clientes',
 ];

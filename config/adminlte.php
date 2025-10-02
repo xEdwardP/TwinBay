@@ -315,9 +315,14 @@ return [
             'icon' => 'fas fa-fw fa-parking',
         ],
         [
-            'text' => 'Tarifas',
+            'text' => 'rates',
             'route' => 'rates.index',
             'icon' => 'fas fa-fw fa-dollar-sign',
+        ],
+        [
+            'text' => 'customers',
+            'route' => 'customers.index',
+            'icon' => 'fas fa-fw fa-users',
         ],
         ['header' => 'system_settings'],
         [
@@ -328,7 +333,7 @@ return [
         [
             'text' => 'users',
             'route' => 'users.index',
-            'icon' => 'fas fa-fw fa-users',
+            'icon' => 'fas fa-fw fa-user-circle',
         ],
         [
             'text' => 'roles',

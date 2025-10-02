@@ -31,8 +31,8 @@ return new class extends Migration
             $table->string('contact_phone', 20)->nullable();
             $table->string('contact_relationship')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

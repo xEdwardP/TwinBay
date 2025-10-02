@@ -55,8 +55,8 @@ class SettingController extends Controller
             $setting->save();
 
             return redirect()->back()->with('success', '¡Configuración guardada con éxito!');
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'No se pudo guardar la configuración: ' . $th->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'No se pudo guardar la configuración: ' . $e->getMessage());
         }
     }
 }

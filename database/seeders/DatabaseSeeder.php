@@ -10,13 +10,15 @@ use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-        $this->call(RoleSeeder::class);
+        $this->call([
+            RoleSeeder::class,
+            CustomerSeeder::class,
+            ParkingSpaceSeeder::class,
+            RateSeeder::class,
+            UserSeeder::class,
+        ]);
 
         User::factory()->create([
             'name' => 'Super Admin',

@@ -9,6 +9,7 @@
     'maxlength' => 255,
     'icon' => null,
     'type' => 'text',
+    'styleInput' => '',
 ])
 
 <div class="form-group">
@@ -34,18 +35,11 @@
 
         {{-- value="{{ old($name, $value) }}" --}}
 
-        <input
-            type="{{ $type }}"
-            name="{{ $name }}"
-            id="{{ $name }}"
-            value="{{ $value }}"
-            placeholder="{{ $placeholder }}"
-            maxlength="{{ $maxlength }}"
-            class="form-control @error($name) is-invalid @enderror"
-            @if ($required) required @endif
-            @if ($readonly) readonly @endif
-            @if ($autofocus) autofocus @endif
-        >
+        <input type="{{ $type }}" name="{{ $name }}" id="{{ $name }}" value="{{ $value }}"
+            placeholder="{{ $placeholder }}" maxlength="{{ $maxlength }}"
+            class="form-control @error($name) is-invalid @enderror" @if ($required) required @endif
+            @if ($readonly) readonly @endif @if ($autofocus) autofocus @endif
+            style="{{ $styleInput }}">
     </div>
 
     <x-ui.form.error :field="$name" class="mt-1" />

@@ -1,17 +1,20 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ParkingSpaceController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
 Route::redirect('/', 'login');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('auth')->name('home');
+Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name('home');
 
 // Setting routes
 Route::prefix('admin/settings')->controller(SettingController::class)->middleware('auth')->group(function () {
@@ -45,7 +48,6 @@ Route::prefix('admin/spaces')->controller(ParkingSpaceController::class)->middle
     Route::get('/', 'index')->name('spaces.index');
     Route::get('/create', 'create')->name('spaces.create');
     Route::post('/store', 'store')->name('spaces.store');
-    // Route::get('/edit/{space}', 'edit')->name('spaces.edit');
     Route::put('/update/{id}', 'update')->name('spaces.update');
     Route::delete('/destroy/{space}', 'destroy')->name('spaces.destroy');
 });
@@ -58,4 +60,23 @@ Route::prefix('admin/rates')->controller(RateController::class)->middleware('aut
     Route::get('/edit/{rate}', 'edit')->name('rates.edit');
     Route::put('/update/{rate}', 'update')->name('rates.update');
     Route::delete('/destroy/{rate}', 'destroy')->name('rates.destroy');
+});
+
+// Customers routes
+Route::prefix('admin/customers')->controller(CustomerController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'index')->name('customers.index');
+    Route::get('/create', 'create')->name('customers.create');
+    Route::post('/store', 'store')->name('customers.store');
+    Route::get('/edit/{customer}', 'edit')->name('customers.edit');
+    Route::put('/update/{customer}', 'update')->name('customers.update');
+    Route::get('/show/{customer}', 'show')->name('customers.show');
+    Route::delete('/destroy/{customer}', 'destroy')->name('customers.destroy');
+    Route::post('/restore/{customer}', 'restore')->name('customers.restore');
+});
+
+// Vehicles Routes
+Route::prefix('admin/customers/vehicles')->controller(VehicleController::class)->middleware('auth')->group(function () {
+    Route::post('/store', 'store')->name('vehicles.store');
+    Route::put('/update/{vehicle}', 'update')->name('vehicles.update');
+    Route::delete('/destroy/{vehicle}', 'destroy')->name('vehicles.destroy');
 });

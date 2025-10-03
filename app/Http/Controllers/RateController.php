@@ -12,7 +12,7 @@ class RateController extends Controller
     public function index()
     {
         return view('admin.rates.index', [
-            'title' => "Listado de tarifas",
+            'title' => "Tarifas",
             'items' => Rate::latest()->get(),
             'setting' => Setting::first(),
         ]);

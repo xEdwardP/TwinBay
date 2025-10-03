@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             ParkingSpaceSeeder::class,
             RateSeeder::class,
             UserSeeder::class,
+            VehicleSeeder::class,
         ]);
 
         User::factory()->create([

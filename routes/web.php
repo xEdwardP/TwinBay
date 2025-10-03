@@ -6,6 +6,7 @@ use App\Http\Controllers\ParkingSpaceController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Auth;
@@ -79,4 +80,13 @@ Route::prefix('admin/customers/vehicles')->controller(VehicleController::class)-
     Route::post('/store', 'store')->name('vehicles.store');
     Route::put('/update/{vehicle}', 'update')->name('vehicles.update');
     Route::delete('/destroy/{vehicle}', 'destroy')->name('vehicles.destroy');
+});
+
+// Tickets Routes
+Route::prefix('admin/tickets')->controller(TicketController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'index')->name('tickets.index');
+    Route::get('/create', 'create')->name('tickets.create');
+    Route::post('/store', 'store')->name('tickets.store');
+    Route::put('/update/{ticket}', 'update')->name('tickets.update');
+    Route::delete('/destroy/{ticket}', 'destroy')->name('tickets.destroy');
 });

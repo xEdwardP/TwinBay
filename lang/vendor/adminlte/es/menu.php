@@ -33,4 +33,5 @@ return [
     'spaces' => 'Espacios',
     'rates' => 'Tarifas',
     'customers' => 'Clientes',
+    'tickets' => 'Tickets',
 ];

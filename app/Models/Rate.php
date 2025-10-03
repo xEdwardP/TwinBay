@@ -15,4 +15,9 @@ class Rate extends Model
     ];
 
     protected $table = 'rates';
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

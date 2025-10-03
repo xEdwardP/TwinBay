@@ -324,6 +324,11 @@ return [
             'route' => 'customers.index',
             'icon' => 'fas fa-fw fa-users',
         ],
+        [
+            'text' => 'tickets',
+            'route' => 'tickets.index',
+            'icon' => 'fas fa-fw fa-ticket-alt',
+        ],
         ['header' => 'system_settings'],
         [
             'text' => 'settings',

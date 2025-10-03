@@ -12,4 +12,9 @@ class ParkingSpace extends Model
     ];
 
     protected $table = "parking_spaces";
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

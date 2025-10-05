@@ -28,11 +28,13 @@
     .ticket-icon {
         font-size: 2rem;
         margin-bottom: 0.5rem;
+        color: black;
     }
 
     .ticket-label {
         font-weight: bold;
         font-size: 1rem;
+        color: black;
     }
 
     .ticket-action {
@@ -40,5 +42,9 @@
         bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
+    }
+
+    .select2-container .select2-selection--single {
+        height: 35px !important;
     }
 </style>

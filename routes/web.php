@@ -85,7 +85,7 @@ Route::prefix('admin/customers/vehicles')->controller(VehicleController::class)-
 // Tickets Routes
 Route::prefix('admin/tickets')->controller(TicketController::class)->middleware('auth')->group(function () {
     Route::get('/', 'index')->name('tickets.index');
-    Route::get('/create', 'create')->name('tickets.create');
+    Route::get('/vehicle/{id}', 'searchVehicle')->name('tickets.search_vehicle');
     Route::post('/store', 'store')->name('tickets.store');
     Route::put('/update/{ticket}', 'update')->name('tickets.update');
     Route::delete('/destroy/{ticket}', 'destroy')->name('tickets.destroy');

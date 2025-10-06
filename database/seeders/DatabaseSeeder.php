@@ -39,8 +39,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('SUPER ADMIN');
 
         Setting::create([
-            'name' => 'TwinBay',
-            'description' => 'Arrendamiento de Vehículos',
+            'name' => 'TwinBay Parking',
+            'description' => 'Gestión inteligente y segura de espacios de estacionamiento',
             'branch' => 'Sucursal Principal',
             'address' => 'Calle Principal, Santa Rosa de Copan, Honduras',
             'phone1' => '26621234',

@@ -50,7 +50,16 @@
                                     <div class="ticket-action">
                                         @if ($ticket_active)
                                             <button class="btn btn-sm btn-outline-danger btn-occupied"
-                                                data-space-id="{{ $space->id }}">
+                                                data-space-id="{{ $space->id }}"
+                                                data-ticket-id="{{ $ticket_active->id }}"
+                                                data-ticket-number="{{ $ticket_active->ticket_number }}"
+                                                data-customer="{{ $ticket_active->customer->name }}"
+                                                data-document="{{ $ticket_active->customer->document_type }} -
+                                                    {{ $ticket_active->customer->document_number }}"
+                                                data-license_plate="{{ $ticket_active->vehicle->license_plate }}"
+                                                data-space-number="{{ $space->parking_number }}"
+                                                data-in-date="{{ $ticket_active->in_date }}"
+                                                data-in-time="{{ $ticket_active->in_time }}">
                                                 Finalizar Ticket
                                             </button>
                                         @else
@@ -66,7 +75,8 @@
                                                 </button>
                                             @else
                                                 <button class="btn btn-sm btn-outline-warning btn-maintenance"
-                                                    data-space-id="{{ $space->id }}">
+                                                    data-space-id="{{ $space->id }}"
+                                                    data-space-number="{{ $space->parking_number }}">
                                                     Revisar
                                                 </button>
                                             @endif
@@ -148,7 +158,7 @@
                                             @foreach ($rates as $rate)
                                                 <option value="{{ $rate->id }}">Tarifa: {{ ucfirst($rate->name) }} -
                                                     Tipo: {{ ucfirst($rate->type) }} - Cantidad: {{ $rate->quantity }} -
-                                                    Precio: {{ $rate->price }}</option>
+                                                    Precio: {{ $rate->cost }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -183,14 +193,14 @@
             <div class="modal-content">
                 <div class="modal-header bg-warning text-white">
                     <h5 class="modal-title">
-                        <i class="fa-solid fa-tools"></i>&nbsp;Espacio en mantenimiento
+                        <i class="fa-solid fa-tools"></i>&nbsp;Espacio #<span id="space_number"></span>
                     </h5>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>El espacio se encuentra en mantenimiento.</p>
+                    <p>Lo sentimos, este espacio se encuentra en mantenimiento.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-warning" data-dismiss="modal">
@@ -203,22 +213,85 @@
 
     {{-- Modal para finalizar ticket --}}
     <div class="modal fade" id="ModalOccupied" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-danger shadow-sm">
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title">
                         <i class="fa-solid fa-car-side"></i>&nbsp;Finalizar Ticket
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body py-3 px-4">
+                    <div class="text-center mb-3">
+                        <h5 class="font-weight-bold text-danger">
+                            TICKET <span id="ticket_number"></span>
+                        </h5>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="bg-light border-left border-danger pl-2 py-1 font-weight-bold">
+                            <i class="fas fa-user"></i>&nbsp;Datos del Cliente
+                        </p>
+                        <div class="pl-3">
+                            <p><strong>Señor(a):</strong> <span id="customer"></span></p>
+                            <p><strong>Documento:</strong> <span id="document"></span></p>
+                            <p><strong>Placa:</strong> <span id="license_plate"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="bg-light border-left border-danger pl-2 py-1 font-weight-bold">
+                            <i class="fas fa-door-open"></i>&nbsp;Datos del Ingreso
+                        </p>
+                        <div class="pl-3">
+                            <p><strong>Espacio Nº:</strong> <span id="spaceNumber"></span></p>
+                            <p><strong>Fecha:</strong> <span id="in_date"></span></p>
+                            <p><strong>Hora:</strong> <span id="in_time"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer ">
+                    <form action="" method="POST" id="form-cancel-ticket" style="display: inline">
+                        @csrf
+                        @method('DELETE')
+                        <input type="hidden" name="ticket_id" id="ticket_id" readonly>
+
+                        <button type="submit" id="btn-cancel-ticket" class="btn btn-outline-danger">
+                            <i class="fa fa-ban"></i>&nbsp;Cancelar Ticket
+                        </button>
+                    </form>
+
+                    <a href="#" id="btn-print" data-dismiss="modal" data-toggle="modal"
+                        data-target="#ModalTicketPdf" type="submit" class="btn btn-outline-warning">
+                        <i class="fa fa-print"></i>&nbsp;Imprimir Ticket
+                    </a>
+
+                    <a href="#" id="btn-invoice" data-toggle="modal" class="btn btn-outline-success">
+                        <i class="fa fa-file-invoice"></i>&nbsp;Facturar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal para imprimir el ticket --}}
+    <div class="modal fade" id="ModalTicketPdf" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title">
+                        <i class="fa fa-print"></i>&nbsp;Impresión de Ticket
                     </h5>
                     <button type="button" class="close text-white " data-dismiss="modal" aria-label="Cerrar">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">
-                        <i class="fa-solid fa-check"></i>&nbsp;Aceptar
-                    </button>
+                    <iframe id="pdf_iframe_ticket" frameborder="0" style="width: 100%; height: 50vh;"></iframe>
                 </div>
             </div>
         </div>
@@ -231,11 +304,13 @@
 
 @section('js')
     <script>
+        var ticketPrinter = null;
+
         $(document).ready(function() {
             $('.select2').select2({
                 allowClear: true,
                 placeholder: $(this).data('placeholder'),
-                width: '80%',
+                width: '88%',
                 dropdownParent: $('#ModalTicket')
             });
 
@@ -280,14 +355,76 @@
             });
 
             $('.btn-maintenance').on('click', function() {
-                var spaceId = $(this).data('space-id');
+                var spaceNumber = $(this).data('space-number');
+                $('#space_number').html(spaceNumber);
                 $('#ModalMaintenance').modal('show');
             });
 
             $('.btn-occupied').on('click', function() {
-                var spaceId = $(this).data('space-id');
+                var ticketId = $(this).data('ticket-id');
+                var ticket_number = $(this).data('ticket-number');
+                var customer = $(this).data('customer');
+                var document = $(this).data('document');
+                var license_plate = $(this).data('license_plate');
+                var spaceNumber = $(this).data('space-number');
+                var in_date = $(this).data('in-date');
+                var in_time = $(this).data('in-time');
+
+                $('#ticket_id').val(ticketId);
+                $('#ticket_number').html(ticket_number);
+                $('#customer').html(customer);
+                $('#document').html(document);
+                $('#license_plate').html(license_plate);
+                $('#spaceNumber').html(spaceNumber);
+                $('#in_date').html(in_date);
+                $('#in_time').html(in_time);
+
+                ticketPrinter = $(this).data('ticket-id');
                 $('#ModalOccupied').modal('show');
             });
+
+            $('#btn-print').on('click', function() {
+                if (ticketPrinter) {
+                    var urlPrint = "{{ url('/admin/tickets') }}" + "/" + ticketPrinter + "/print";
+                    $('#pdf_iframe_ticket').attr('src', urlPrint);
+                }
+            });
+        });
+    </script>
+
+    @if (session('ticket_id'))
+        <script>
+            var ticketId = "{{ session('ticket_id') }}";
+            var urlPrint = "{{ url('/admin/tickets') }}" + "/" + ticketId + "/print";
+            $('#ModalTicketPdf').modal('show');
+            $('#pdf_iframe_ticket').attr('src', urlPrint);
+        </script>
+    @endif
+
+    <script>
+        $('#btn-cancel-ticket').on('click', function() {
+            event.preventDefault();
+            var ticketId = $('#ticket_id').val();
+
+            if (ticketId) {
+                Swal.fire({
+                    title: '¿Desea cancelar este ticket?',
+                    text: "¡No podrás revertir esto!",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, cancelar',
+                    cancelButtonText: 'No, mantener'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var form = $('#form-cancel-ticket');
+                        var url = "{{ url('admin/tickets/destroy') }}" + "/" + ticketId;
+                        form.attr('action', url);
+                        form.submit();
+                    }
+                });
+            }
         });
     </script>
 @stop

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TicketRequest;
 use App\Models\ParkingSpace;
 use App\Models\Rate;
+use App\Models\Setting;
 use App\Models\Ticket;
 use App\Models\Vehicle;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
@@ -34,7 +36,7 @@ class TicketController extends Controller
             $ticket_active = Ticket::where('vehicle_id', $validated['vehicle_id'])->where('ticket_status', 'activo')->first();
 
             if ($ticket_active) {
-                return redirect()->route('tickets.index')->with('error', 'El vehículo ya tiene un ticket activo.');
+                return redirect()->route('tickets.index')->with('error', '¡El vehículo ya tiene un ticket activo!');
             }
 
             $vehicle = Vehicle::findOrFail($validated['vehicle_id']);
@@ -52,7 +54,7 @@ class TicketController extends Controller
             $ticket->ticket_number = 'TK-' . $nextTicket;
 
             // Ticket Date and Time
-            echo $dateTime = Carbon::now();
+            $dateTime = Carbon::now();
             $ticket->in_date = $dateTime->toDateString();
             $ticket->in_time = $dateTime->toTimeString();
 
@@ -65,30 +67,29 @@ class TicketController extends Controller
             $parkingSpace->parking_status = 'ocupado';
             $parkingSpace->save();
 
-            return redirect()->route('tickets.index')->with('success', 'Ticket creado exitosamente!');
+            return redirect()->route('tickets.index')->with('success', '¡Ticket creado exitosamente!')->with('ticket_id', $ticket->id);
         } catch (\Exception $e) {
-            return redirect()->route('tickets.index')->with('error', 'No se pudo generar el ticket: ' . $e->getMessage());
+            return redirect()->route('tickets.index')->with('error', 'No se pudo generar el ticket debido a un error: ' . $e->getMessage());
         }
     }
 
-    public function show(Ticket $ticket)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $ticket = Ticket::findOrFail($id);
+            $ticket->ticket_status = 'cancelado';
+            $ticket->save();
+            $ticket->delete();
 
-    public function edit(Ticket $ticket)
-    {
-        //
-    }
-
-    public function update(Request $request, Ticket $ticket)
-    {
-        //
-    }
-
-    public function destroy(Ticket $ticket)
-    {
-        //
+            // Update Parking Space Status
+            $parkingSpace = ParkingSpace::findOrFail($ticket->parking_space_id);
+            $parkingSpace->parking_status = 'disponible';
+            $parkingSpace->save();
+            
+            return redirect()->route('tickets.index')->with('success', '¡El ticket fue cancelado exitosamente!');
+        } catch (\Exception $e) {
+            return redirect()->route('tickets.index')->with('error', 'No se pudo cancelar el ticket debido a un error: ' . $e->getMessage());
+        }
     }
 
     public function searchVehicle($id)
@@ -98,5 +99,33 @@ class TicketController extends Controller
             'title' => 'Buscar vehículo',
             'vehicle' => $vehicle,
         ]);
+    }
+
+    public function printTicket($id)
+    {
+        try {
+            $ticket = Ticket::with('customer')->findOrFail($id);
+            $parkingSpace = ParkingSpace::findOrFail($ticket->parking_space_id);
+
+            $pdf = Pdf::loadView('admin.tickets.ticket_pdf', [
+                'ticket' => $ticket,
+                'setting' => Setting::first(),
+                'date' => Carbon::now(),
+            ]);
+
+            // Configuración para impresora térmica: 80mm de ancho, alto automático
+            $pdf->setOptions([
+                'dpi' => '120',
+                'defaultPaperSize' => [0, 0, 226.77, 0], // 80mm = 226.77 points
+                'isHtml5ParserEnabled' => 'true',
+                'isRemoteEnabled' => 'true',
+                'defaultFont' => 'Arial Narrow'
+            ]);
+
+            $pdf->setPaper([0, 0, 226.77, 999999]); // 80mm de ancho, alto automático
+            return $pdf->stream('Ticket.pdf');
+        } catch (\Exception $e) {
+            return redirect()->route('tickets.index')->with('error', 'No se pudo imprimir el ticket debido a un error: ' . $e->getMessage());
+        }
     }
 }

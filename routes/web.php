@@ -87,6 +87,6 @@ Route::prefix('admin/tickets')->controller(TicketController::class)->middleware(
     Route::get('/', 'index')->name('tickets.index');
     Route::get('/vehicle/{id}', 'searchVehicle')->name('tickets.search_vehicle');
     Route::post('/store', 'store')->name('tickets.store');
-    Route::put('/update/{ticket}', 'update')->name('tickets.update');
     Route::delete('/destroy/{ticket}', 'destroy')->name('tickets.destroy');
+    Route::get('/{ticket}/print', 'printTicket')->name('tickets.print_ticket');
 });

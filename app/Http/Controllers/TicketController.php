@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TicketRequest;
+use App\Models\Invoice;
 use App\Models\ParkingSpace;
 use App\Models\Rate;
 use App\Models\Setting;
@@ -10,6 +11,7 @@ use App\Models\Ticket;
 use App\Models\Vehicle;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -85,7 +87,7 @@ class TicketController extends Controller
             $parkingSpace = ParkingSpace::findOrFail($ticket->parking_space_id);
             $parkingSpace->parking_status = 'disponible';
             $parkingSpace->save();
-            
+
             return redirect()->route('tickets.index')->with('success', '¡El ticket fue cancelado exitosamente!');
         } catch (\Exception $e) {
             return redirect()->route('tickets.index')->with('error', 'No se pudo cancelar el ticket debido a un error: ' . $e->getMessage());
@@ -126,6 +128,94 @@ class TicketController extends Controller
             return $pdf->stream('Ticket.pdf');
         } catch (\Exception $e) {
             return redirect()->route('tickets.index')->with('error', 'No se pudo imprimir el ticket debido a un error: ' . $e->getMessage());
+        }
+    }
+
+    public function completeInvoice($id)
+    {
+        try {
+            $ticket = Ticket::with('rate')->findOrFail($id);
+
+            $in_datetime = new DateTime($ticket->in_date . ' ' . $ticket->in_time);
+            $out_datetime = new DateTime(Carbon::now());
+            $diff = $in_datetime->diff($out_datetime);
+
+            $calcDays = $diff->days;
+            $calcHours = $diff->h;
+            $calcMinutes = $diff->i;
+            $diffMinutes = ($calcDays * 1440) + ($calcHours * 60) + $calcMinutes;
+
+            $totalTime = "{$calcDays} dias con {$calcHours} horas con {$calcMinutes} minutos";
+            $totalAmount = 0;
+            $rate = null;
+
+            $type = $ticket->rate->type;
+            $name = $ticket->rate->name;
+
+            if ($type === 'por hora') {
+                $grace = match (true) {
+                    $calcHours >= 1 && $calcHours <= 8 => 10,
+                    $calcHours >= 9 && $calcHours <= 18 => 15,
+                    $calcHours >= 19 && $calcHours <= 23 => 20,
+                    default => 15,
+                };
+
+                if ($calcMinutes > $grace) {
+                    $calcHours += 1;
+                }
+
+                $rate = Rate::where('type', 'por hora')
+                    ->where('name', $name)
+                    ->where('quantity', $calcHours)
+                    ->first();
+            } elseif ($type === 'por día') {
+                if ($diffMinutes > $ticket->rate->grace_period_minutes) {
+                    $calcDays += 1;
+                }
+
+                $rate = Rate::where('type', 'por dia')
+                    ->where('name', $name)
+                    ->where('quantity', $calcDays)
+                    ->first();
+            }
+
+            if (!$rate) {
+                return redirect()->route('tickets.index')
+                    ->with('error', "No se encontró una tarifa: Tipo: {$type} - {$name} con cantidad: " . ($type === 'por hora' ? $calcHours : $calcDays));
+            }
+
+            $totalAmount = $rate->cost;
+
+            $dateTime = Carbon::now();
+            $ticket->rate_id = $rate->id;
+            $ticket->out_date = $dateTime->toDateString();
+            $ticket->out_time = $dateTime->toTimeString();
+            $ticket->total_time = $totalTime;
+            $ticket->total_amount = $totalAmount;
+            $ticket->ticket_status = 'completado';
+            $ticket->save();
+
+            ParkingSpace::where('id', $ticket->parking_space_id)->update(['parking_status' => 'disponible']);
+            
+            // Create Invoice
+            $invoice = new Invoice();
+            $invoice->ticket_id = $ticket->id;
+            $invoice->user_id = Auth::user()->id;
+            $invoice->customer_id = $ticket->customer_id;
+            $invoice->vehicle_id = $ticket->vehicle_id;
+
+            // Generate Invoice Number
+            $lastInvoice = DB::table('invoices')->max('id');
+            $nextInvoice = $lastInvoice ? $lastInvoice + 1 : 1;
+            $invoice->invoice_number = $nextInvoice;
+
+            $invoice->detail = "Servicio de parqueo de " . $totalTime;
+            $invoice->total = $totalAmount;
+            $invoice->save();
+
+            return redirect()->route('tickets.index')->with('success', 'Ticket facturado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('tickets.index')->with('error', 'No se pudo facturar el ticket: ' . $e->getMessage());
         }
     }
 }

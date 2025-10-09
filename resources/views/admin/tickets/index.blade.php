@@ -270,7 +270,7 @@
                         <i class="fa fa-print"></i>&nbsp;Imprimir Ticket
                     </a>
 
-                    <a href="#" id="btn-invoice" data-toggle="modal" class="btn btn-outline-success">
+                    <a href="#" id="btn-invoice" class="btn btn-outline-success">
                         <i class="fa fa-file-invoice"></i>&nbsp;Facturar
                     </a>
                 </div>
@@ -305,6 +305,7 @@
 @section('js')
     <script>
         var ticketPrinter = null;
+        var ticketInvoice = null;
 
         $(document).ready(function() {
             $('.select2').select2({
@@ -380,7 +381,12 @@
                 $('#in_time').html(in_time);
 
                 ticketPrinter = $(this).data('ticket-id');
+                ticketInvoice = $(this).data('ticket-id');
+
+                var urlInvoice = "{{ url('/admin/tickets/complete_invoice') }}" + "/" + ticketInvoice;
+                
                 $('#ModalOccupied').modal('show');
+                $('#btn-invoice').attr('href', urlInvoice);
             });
 
             $('#btn-print').on('click', function() {

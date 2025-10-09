@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ParkingSpaceController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\RoleController;
@@ -87,6 +88,12 @@ Route::prefix('admin/tickets')->controller(TicketController::class)->middleware(
     Route::get('/', 'index')->name('tickets.index');
     Route::get('/vehicle/{id}', 'searchVehicle')->name('tickets.search_vehicle');
     Route::post('/store', 'store')->name('tickets.store');
+    Route::get('/complete_invoice/{ticket}', 'completeInvoice')->name('tickets.complete_invoice');
     Route::delete('/destroy/{ticket}', 'destroy')->name('tickets.destroy');
     Route::get('/{ticket}/print', 'printTicket')->name('tickets.print_ticket');
+});
+
+// Invoices Routes
+Route::prefix('admin/invoices')->controller(InvoiceController::class)->middleware('auth')->group(function () {
+    Route::get('/print/{invoice}', 'printInvoice')->name('invoices.print');
 });

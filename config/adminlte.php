@@ -325,6 +325,11 @@ return [
             'icon' => 'fas fa-fw fa-users',
         ],
         [
+            'text' => 'vehicles',
+            'route' => 'vehicles.index',
+            'icon' => 'fas fa-fw fa-car-side',
+        ],
+        [
             'text' => 'tickets',
             'route' => 'tickets.index',
             'icon' => 'fas fa-fw fa-ticket-alt',
@@ -471,6 +476,21 @@ return [
                     'location' => '//cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js',
                 ],
             ],
+        ],
+        'VanillaCalendar' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => 'https://cdn.jsdelivr.net/npm/vanilla-calendar-pro/build/vanilla-calendar.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://cdn.jsdelivr.net/npm/vanilla-calendar-pro/build/vanilla-calendar.min.js',
+                ],
+            ]
         ],
         'Sweetalert2' => [
             'active' => true,

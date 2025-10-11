@@ -78,6 +78,7 @@ Route::prefix('admin/customers')->controller(CustomerController::class)->middlew
 
 // Vehicles Routes
 Route::prefix('admin/customers/vehicles')->controller(VehicleController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'index')->name('vehicles.index');
     Route::post('/store', 'store')->name('vehicles.store');
     Route::put('/update/{vehicle}', 'update')->name('vehicles.update');
     Route::delete('/destroy/{vehicle}', 'destroy')->name('vehicles.destroy');

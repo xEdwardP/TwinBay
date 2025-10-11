@@ -296,6 +296,25 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal para imprimir la factura del ticket --}}
+    <div class="modal fade" id="ModalInvoicePdf" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title">
+                        <i class="fa fa-print"></i>&nbsp;Impresión de la Factura del Ticket
+                    </h5>
+                    <button type="button" class="close text-white " data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="pdf_iframe_invoice" frameborder="0" style="width: 100%; height: 50vh;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('css')
@@ -384,7 +403,7 @@
                 ticketInvoice = $(this).data('ticket-id');
 
                 var urlInvoice = "{{ url('/admin/tickets/complete_invoice') }}" + "/" + ticketInvoice;
-                
+
                 $('#ModalOccupied').modal('show');
                 $('#btn-invoice').attr('href', urlInvoice);
             });
@@ -404,6 +423,15 @@
             var urlPrint = "{{ url('/admin/tickets') }}" + "/" + ticketId + "/print";
             $('#ModalTicketPdf').modal('show');
             $('#pdf_iframe_ticket').attr('src', urlPrint);
+        </script>
+    @endif
+
+    @if (session('invoice_id'))
+        <script>
+            var invoiceId = "{{ session('invoice_id') }}";
+            var urlInvoice = "{{ url('/admin/invoices/print') }}" + "/" + invoiceId;
+            $('#ModalInvoicePdf').modal('show');
+            $('#pdf_iframe_invoice').attr('src', urlInvoice);
         </script>
     @endif
 

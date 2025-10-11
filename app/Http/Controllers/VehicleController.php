@@ -12,6 +12,13 @@ use function Pest\Laravel\json;
 
 class VehicleController extends Controller
 {
+    public function index(){
+        return view('admin.vehicles.index', [
+            'title' => 'Vehiculos',
+            'items' => Vehicle::with('customer')->latest()->get(),
+        ]);
+    }
+
     public function store(VehicleRequest $request)
     {
         try {

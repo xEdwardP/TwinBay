@@ -213,7 +213,7 @@ class TicketController extends Controller
             $invoice->total = $totalAmount;
             $invoice->save();
 
-            return redirect()->route('tickets.index')->with('success', 'Ticket facturado correctamente.');
+            return redirect()->route('tickets.index')->with('success', 'Ticket facturado correctamente.')->with('invoice_id', $invoice->id);;
         } catch (\Exception $e) {
             return redirect()->route('tickets.index')->with('error', 'No se pudo facturar el ticket: ' . $e->getMessage());
         }

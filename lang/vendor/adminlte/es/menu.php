@@ -34,4 +34,6 @@ return [
     'rates' => 'Tarifas',
     'customers' => 'Clientes',
     'tickets' => 'Tickets',
+    'vehicles' => 'Vehiculos',
+    'invoices' => 'Facturas',
 ];

@@ -334,6 +334,11 @@ return [
             'route' => 'tickets.index',
             'icon' => 'fas fa-fw fa-ticket-alt',
         ],
+        [
+            'text' => 'analytics',
+            'route' => 'analytics.index',
+            'icon' => 'fas fa-fw fa-chart-line',
+        ],
         ['header' => 'system_settings'],
         [
             'text' => 'settings',
@@ -473,7 +478,8 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js',
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js',
+                    // 'location' => '//cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js',
                 ],
             ],
         ],

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoiceController;
@@ -97,4 +98,9 @@ Route::prefix('admin/tickets')->controller(TicketController::class)->middleware(
 // Invoices Routes
 Route::prefix('admin/invoices')->controller(InvoiceController::class)->middleware('auth')->group(function () {
     Route::get('/print/{invoice}', 'printInvoice')->name('invoices.print');
+});
+
+// Analytics routes
+Route::prefix('admin/analytics')->controller(AnalyticController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'index')->name('analytics.index');
 });

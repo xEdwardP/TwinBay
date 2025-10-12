@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-    <x-pages.page-header title="Bienvenido, {{ Auth::user()->name }}" :breadcrumbs="[['label' => 'Inicio', 'route' => 'home']]" icon="fas fa-hand text-warning" />
+    <x-pages.page-header title="Bienvenido, {{ Auth::user()->name }}" :breadcrumbs="[['label' => 'Inicio']]" icon="fas fa-hand text-warning" />
     <hr>
 @stop
 
@@ -127,105 +127,44 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-3 col-lg-3 col-6">
-                        <div class="small-box bg-success zoomP">
-                            <div class="inner text-white">
-                                <h4 class="fw-bold">{{ $setting->currency }} {{ number_format($totalTodayIncomes, 2) }}
-                                </h4>
-                                <p>Ingresos de hoy</p>
+                    <div class="col-md-12">
+                        <div class="card card-outline card-primary table-responsive">
+                            <div class="card-header">
+                                <div class="card-title mt-1">
+                                    <h5><i class="fa-solid fa-clipboard-list"></i>&nbsp;Tickets Facturados Recientemente
+                                    </h5>
+                                </div>
                             </div>
-                            <div class="icon">
-                                <i class="fas fa-money-bill-wave"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 col-lg-3 col-6">
-                        <div class="small-box bg-success zoomP">
-                            <div class="inner text-white">
-                                <h4 class="fw-bold">{{ $setting->currency }}
-                                    {{ number_format($totalYesterdayIncomes, 2) }}</h4>
-                                <p>Ingresos de ayer</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-money-bill-wave"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 col-lg-3 col-6">
-                        <div class="small-box bg-info zoomP">
-                            <div class="inner text-white">
-                                <h4 class="fw-bold">{{ $setting->currency }} {{ number_format($totalWeekIncomes, 2) }}
-                                </h4>
-                                <p>Ingresos: Esta semana</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-calendar-day"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 col-lg-3 col-6">
-                        <div class="small-box bg-info zoomP">
-                            <div class="inner text-white">
-                                <h4 class="fw-bold">{{ $setting->currency }}
-                                    {{ number_format($totalLastWeekIncomes, 2) }}</h4>
-                                <p>Ingresos: Semana anterior</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-calendar"></i>
+                            <div class="card-body">
+                                <table class="table table-bordered table-striped table-hover table-sm table-responsive-sm table-responsive-md">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center"># Factura</th>
+                                            <th class="text-center">Cliente</th>
+                                            <th class="text-center">Placa</th>
+                                            <th class="text-center">Usuario</th>
+                                            <th class="text-center">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($invoices as $invoice)
+                                            <tr>
+                                                <td class="text-center">{{ $invoice->invoice_number }}</td>
+                                                <td class="text-center">{{ $invoice->customer->name }}</td>
+                                                <td class="text-center">{{ $invoice->vehicle->license_plate }}</td>
+                                                <td class="text-center">{{ $invoice->user->name }}</td>
+                                                <td class="text-center">{{ $setting->currency . ' ' . number_format($invoice->total, 2) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-3 col-lg-3 col-6">
-                        <div class="small-box bg-primary zoomP">
-                            <div class="inner text-white">
-                                <h4 class="fw-bold">{{ $setting->currency }} {{ number_format($totalMonthIncomes, 2) }}
-                                </h4>
-                                <p>Ingresos del mes</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 col-lg-3 col-6">
-                        <div class="small-box bg-primary zoomP">
-                            <div class="inner text-white">
-                                <h4 class="fw-bold">{{ $setting->currency }}
-                                    {{ number_format($totalLastMonthIncomes, 2) }}
-                                </h4>
-                                <p>Ingresos del mes anterior</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-chart-bar"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-6 col-9">
-                        <div class="small-box bg-warning zoomP">
-                            <div class="inner text-white">
-                                <h4 class="fw-bold">{{ $setting->currency }}
-                                    {{ number_format($totalIncomes, 2) }}
-                                </h4>
-                                <p>Ingresos totales</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-coins"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
             <div class="col-md-3">
-                <div class="card card-outline card-info mb-3 col-md-12 zoomP">
+                <div class="card card-outline card-info mb-3 col-md-12">
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-clock"></i>&nbsp;<strong>Hora actual</strong>
@@ -237,7 +176,7 @@
                     </div>
                 </div>
 
-                <div class="card card-outline card-primary col-md-12 zoomP">
+                <div class="card card-outline card-primary col-md-12">
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-calendar-alt"></i>&nbsp;<strong>Calendario</strong>

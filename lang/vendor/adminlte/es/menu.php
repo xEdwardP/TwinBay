@@ -36,4 +36,5 @@ return [
     'tickets' => 'Tickets',
     'vehicles' => 'Vehiculos',
     'invoices' => 'Facturas',
+    'analytics' => 'Análisis y Gráficos',
 ];

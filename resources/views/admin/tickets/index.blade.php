@@ -59,7 +59,10 @@
                                                 data-license_plate="{{ $ticket_active->vehicle->license_plate }}"
                                                 data-space-number="{{ $space->parking_number }}"
                                                 data-in-date="{{ $ticket_active->in_date }}"
-                                                data-in-time="{{ $ticket_active->in_time }}">
+                                                data-in-time="{{ $ticket_active->in_time }}"
+                                                data-rate-name="{{ ucfirst($ticket_active->rate->name) }}"
+                                                data-rate-type="{{ ucfirst($ticket_active->rate->type) }}"
+                                                data-rate-cost="{{ $setting->currency . ' ' . number_format($ticket_active->rate->cost, 2) }}">
                                                 Finalizar Ticket
                                             </button>
                                         @else
@@ -252,6 +255,26 @@
                             <p><strong>Hora:</strong> <span id="in_time"></span></p>
                         </div>
                     </div>
+
+                    <div class="mb-3">
+                        <p class="bg-light border-left border-danger pl-2 py-1 font-weight-bold">
+                            <i class="fas fa-dollar-sign"></i>&nbsp;Datos de la Tarifa
+                        </p>
+                        <div class="pl-3">
+                            <p><strong>Tarifa:</strong> <span id="rate_name"></span></p>
+                            <p><strong>Tipo:</strong> <span id="rate_type"></span></p>
+                            <p><strong>Costo:</strong> <span id="rate_cost"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="bg-light border-left border-danger pl-2 py-1 font-weight-bold">
+                            <i class="fas fa-clock"></i>&nbsp;Tiempo transcurrido
+                        </p>
+                        <div class="pl-3">
+                            <p id="elapsedTime"></p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer ">
@@ -389,6 +412,9 @@
                 var spaceNumber = $(this).data('space-number');
                 var in_date = $(this).data('in-date');
                 var in_time = $(this).data('in-time');
+                var rate_name = $(this).data('rate-name');
+                var rate_type = $(this).data('rate-type');
+                var rate_cost = $(this).data('rate-cost');
 
                 $('#ticket_id').val(ticketId);
                 $('#ticket_number').html(ticket_number);
@@ -398,6 +424,9 @@
                 $('#spaceNumber').html(spaceNumber);
                 $('#in_date').html(in_date);
                 $('#in_time').html(in_time);
+                $('#rate_name').html(rate_name);
+                $('#rate_type').html(rate_type);
+                $('#rate_cost').html(rate_cost);
 
                 ticketPrinter = $(this).data('ticket-id');
                 ticketInvoice = $(this).data('ticket-id');
@@ -406,6 +435,23 @@
 
                 $('#ModalOccupied').modal('show');
                 $('#btn-invoice').attr('href', urlInvoice);
+
+                const inDate = new Date(in_date + " " + in_time);
+                const nowDate = new Date();
+                const diffMinutes = Math.floor(nowDate - inDate) / 60000;
+                const days = Math.floor(diffMinutes / 1440);
+                const remainingHours = diffMinutes % 1440;
+                const hours = Math.floor(remainingHours / 60);
+                const minutes = Math.floor(remainingHours % 60);
+
+                const elapsedTime = days + ' dias con ' + hours + ' horas con ' + minutes + ' minutos';
+                $('#elapsedTime').html(elapsedTime);
+
+                if (diffMinutes > 10) {
+                    $('#btn-cancel-ticket').attr('disabled', 'disabled').css('display', 'none');
+                } else {
+                    $('#btn-cancel-ticket').removeAttr('disabled');
+                }
             });
 
             $('#btn-print').on('click', function() {

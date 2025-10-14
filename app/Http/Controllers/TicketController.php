@@ -21,12 +21,15 @@ class TicketController extends Controller
 {
     public function index()
     {
+        $ratesId = DB::table('rates')->select(DB::raw('MIN(id) as id'))->groupBy('name', 'type')->pluck('id');
+        
         return view('admin.tickets.index', [
             'title' => 'Tickets',
+            'setting' => Setting::first(),
             'spaces' => ParkingSpace::all(),
             'items' => Ticket::latest()->get(),
             'vehicles' => Vehicle::with('customer')->get(),
-            'rates' => Rate::all(),
+            'rates' => Rate::whereIn('id', $ratesId)->get(),
             'tickets_actives' => Ticket::where('ticket_status', 'activo')->get(),
         ]);
     }

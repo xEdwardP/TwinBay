@@ -60,6 +60,7 @@
                                                 data-space-number="{{ $space->parking_number }}"
                                                 data-in-date="{{ $ticket_active->in_date }}"
                                                 data-in-time="{{ $ticket_active->in_time }}"
+                                                data-rate-id="{{ $ticket_active->rate_id }}"
                                                 data-rate-name="{{ ucfirst($ticket_active->rate->name) }}"
                                                 data-rate-type="{{ ucfirst($ticket_active->rate->type) }}"
                                                 data-rate-cost="{{ $setting->currency . ' ' . number_format($ticket_active->rate->cost, 2) }}">
@@ -269,10 +270,56 @@
 
                     <div class="mb-3">
                         <p class="bg-light border-left border-danger pl-2 py-1 font-weight-bold">
+                            <i class="fas fa-edit"></i>&nbsp;Modificar Tarifa
+                        </p>
+
+                        <form action="{{ route('tickets.update') }}" method="POST">
+                            @csrf
+                            <input type="hidden" id="ticket_id_edit_rate" name="ticket_id_edit_rate" readonly>
+                            <div class="form-row">
+                                <div class="form-group col-md-12 mb-2">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-tag"></i>
+                                            </span>
+                                        </div>
+                                        <select name="rate_id" id="rate_id_edit" class="form-control" required>
+                                            <option value="">Seleccione una tarifa</option>
+                                            @foreach ($rates as $rate)
+                                                <option value="{{ $rate->id }}">
+                                                    Tarifa: {{ ucfirst($rate->name) }} - Tipo: {{ ucfirst($rate->type) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <div class="input-group-append ml-2 mt-1">
+                                            <button type="submit" class="btn btn-sm btn-outline-success d-inline-block"
+                                                title="Actualizar tarifa">
+                                                <i class="fas fa-sync-alt"></i>&nbsp;Actualizar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <x-ui.form.error field="rate_id" class="mt-1" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="bg-light border-left border-danger pl-2 py-1 font-weight-bold">
                             <i class="fas fa-clock"></i>&nbsp;Tiempo transcurrido
                         </p>
                         <div class="pl-3">
                             <p id="elapsedTime"></p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="bg-light border-left border-danger pl-2 py-1 font-weight-bold">
+                            <i class="fa fa-money-bill-alt"></i>&nbsp;Total a pagar
+                        </p>
+                        <div class="pl-3">
+                            <p><strong id="totalAmount">Costo:</strong></p>
                         </div>
                     </div>
                 </div>
@@ -412,11 +459,13 @@
                 var spaceNumber = $(this).data('space-number');
                 var in_date = $(this).data('in-date');
                 var in_time = $(this).data('in-time');
+                var rate_id = $(this).data('rate-id');
                 var rate_name = $(this).data('rate-name');
                 var rate_type = $(this).data('rate-type');
                 var rate_cost = $(this).data('rate-cost');
 
                 $('#ticket_id').val(ticketId);
+                $('#ticket_id_edit_rate').val(ticketId);
                 $('#ticket_number').html(ticket_number);
                 $('#customer').html(customer);
                 $('#document').html(document);
@@ -427,6 +476,8 @@
                 $('#rate_name').html(rate_name);
                 $('#rate_type').html(rate_type);
                 $('#rate_cost').html(rate_cost);
+
+                $('#rate_id_edit').val(rate_id);
 
                 ticketPrinter = $(this).data('ticket-id');
                 ticketInvoice = $(this).data('ticket-id');
@@ -447,11 +498,31 @@
                 const elapsedTime = days + ' dias con ' + hours + ' horas con ' + minutes + ' minutos';
                 $('#elapsedTime').html(elapsedTime);
 
+                const modal = $('#ModalOccupied');
+                const btnCancelTicket = modal.find('#btn-cancel-ticket');
+                const btnInvoice = modal.find('#btn-invoice');
+                const totalAmount = modal.find('#totalAmount');
+
                 if (diffMinutes > 10) {
-                    $('#btn-cancel-ticket').attr('disabled', 'disabled').css('display', 'none');
+                    btnCancelTicket.prop('disabled', true).css('display', 'none');
+                    btnInvoice.show();
+                    totalAmount.show();
                 } else {
-                    $('#btn-cancel-ticket').removeAttr('disabled');
+                    btnCancelTicket.prop('disabled', false).css('display', 'block');
+                    btnInvoice.hide();
+                    totalAmount.hide();
                 }
+
+                $.ajax({
+                    url : "{{ url('/admin/tickets/') }}" + "/" + ticketId + "/calcAmount",
+                    type : 'GET',
+                    success: function(data){
+                        $('#totalAmount').html(data);
+                    },
+                    error: function(){
+                        $('#totalAmount').html('<p>Error al cargar el total a pagar.</p>');
+                    }
+                });
             });
 
             $('#btn-print').on('click', function() {

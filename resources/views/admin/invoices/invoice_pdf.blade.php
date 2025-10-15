@@ -100,6 +100,12 @@
 
         <div class="line"></div>
 
+        <div class="section-title">DATOS DE LA TARIFA</div>
+        <div class="info"><strong>Nombre:</strong> {{ ucfirst($invoice->ticket->rate->name) }}</div>
+        <div class="info"><strong>Tipo:</strong> {{ ucfirst($invoice->ticket->rate->type) }}</div>
+
+        <div class="line"></div>
+
         <div>
             <table>
                 <thead>
@@ -112,12 +118,13 @@
                     <tr>
                         <td>{{ $invoice->detail }}</td>
                         <td>1</td>
-                        <td>{{ $setting->currency . ' ' . $invoice->total }}</td>
+                        <td>{{ $setting->currency . ' ' . number_format($invoice->total, 2) }}</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p style="text-align: right">Monto Total: {{ $setting->currency . ' ' . $invoice->total }}</p>
+            <p style="text-align: right">Monto Total:
+                {{ $setting->currency . ' ' . number_format($invoice->total, 2) }}</p>
         </div>
 
         <div class="line"></div>

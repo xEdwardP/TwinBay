@@ -90,9 +90,11 @@ Route::prefix('admin/tickets')->controller(TicketController::class)->middleware(
     Route::get('/', 'index')->name('tickets.index');
     Route::get('/vehicle/{id}', 'searchVehicle')->name('tickets.search_vehicle');
     Route::post('/store', 'store')->name('tickets.store');
+    Route::post('/update/ticket_rate/', 'update')->name('tickets.update');
     Route::get('/complete_invoice/{ticket}', 'completeInvoice')->name('tickets.complete_invoice');
     Route::delete('/destroy/{ticket}', 'destroy')->name('tickets.destroy');
     Route::get('/{ticket}/print', 'printTicket')->name('tickets.print_ticket');
+    Route::get('/{ticket}/calcAmount', 'calcAmount')->name('tickets.calcAmount');
 });
 
 // Invoices Routes

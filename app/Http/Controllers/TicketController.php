@@ -22,7 +22,7 @@ class TicketController extends Controller
     public function index()
     {
         $ratesId = DB::table('rates')->select(DB::raw('MIN(id) as id'))->groupBy('name', 'type')->pluck('id');
-        
+
         return view('admin.tickets.index', [
             'title' => 'Tickets',
             'setting' => Setting::first(),
@@ -75,6 +75,26 @@ class TicketController extends Controller
             return redirect()->route('tickets.index')->with('success', '¡Ticket creado exitosamente!')->with('ticket_id', $ticket->id);
         } catch (\Exception $e) {
             return redirect()->route('tickets.index')->with('error', 'No se pudo generar el ticket debido a un error: ' . $e->getMessage());
+        }
+    }
+
+    public function update(Request $request)
+    {
+        try {
+            $request->validate([
+                'ticket_id_edit_rate' => 'required|exists:Tickets,id',
+                'rate_id' => 'required|exists:Rates,id',
+            ]);
+
+            $ticket = Ticket::findOrFail($request->ticket_id_edit_rate);
+            $rate = Rate::findOrFail($request->rate_id);
+
+            $ticket->rate_id = $rate->id;
+            $ticket->save();
+
+            return redirect()->route('tickets.index')->with('success', '¡La tarifa del ticket fue actualizada exitosamente!');
+        } catch (\Exception $e) {
+            return redirect()->route('tickets.index')->with('error', 'No se pudo actualizar la tarifa del ticket debido a un error: ' . $e->getMessage());
         }
     }
 
@@ -152,6 +172,14 @@ class TicketController extends Controller
             $totalAmount = 0;
             $rate = null;
 
+            if ($calcDays > 0) {
+                $rateDay = DB::table('rates')->where('name', 'regular')->where('type', 'por dia')->min('id');
+                $ticket->rate_id = $rateDay;
+                $ticket->save();
+
+                $ticket->load('rate');
+            }
+
             $type = $ticket->rate->type;
             $name = $ticket->rate->name;
 
@@ -165,15 +193,19 @@ class TicketController extends Controller
 
                 if ($calcMinutes > $grace) {
                     $calcHours += 1;
+                } else {
+                    $calcHours = $calcHours == 0 ? 1 : $calcHours;
                 }
 
                 $rate = Rate::where('type', 'por hora')
                     ->where('name', $name)
                     ->where('quantity', $calcHours)
                     ->first();
-            } elseif ($type === 'por día') {
+            } elseif ($type === 'por dia') {
                 if ($diffMinutes > $ticket->rate->grace_period_minutes) {
                     $calcDays += 1;
+                } else {
+                    $calcDays = $calcDays == 0 ? 1 : $calcDays;
                 }
 
                 $rate = Rate::where('type', 'por dia')
@@ -199,7 +231,7 @@ class TicketController extends Controller
             $ticket->save();
 
             ParkingSpace::where('id', $ticket->parking_space_id)->update(['parking_status' => 'disponible']);
-            
+
             // Create Invoice
             $invoice = new Invoice();
             $invoice->ticket_id = $ticket->id;
@@ -219,6 +251,75 @@ class TicketController extends Controller
             return redirect()->route('tickets.index')->with('success', 'Ticket facturado correctamente.')->with('invoice_id', $invoice->id);;
         } catch (\Exception $e) {
             return redirect()->route('tickets.index')->with('error', 'No se pudo facturar el ticket: ' . $e->getMessage());
+        }
+    }
+
+    public function calcAmount($id)
+    {
+        try {
+            $ticket = Ticket::with('rate')->findOrFail($id);
+            $setting = Setting::first();
+
+            $in_datetime = new DateTime($ticket->in_date . ' ' . $ticket->in_time);
+            $out_datetime = new DateTime(Carbon::now());
+            $diff = $in_datetime->diff($out_datetime);
+
+            $calcDays = $diff->days;
+            $calcHours = $diff->h;
+            $calcMinutes = $diff->i;
+            $diffMinutes = ($calcDays * 1440) + ($calcHours * 60) + $calcMinutes;
+
+            $rate = null;
+
+            if ($calcDays > 0) {
+                $rateDay = DB::table('rates')->where('name', 'regular')->where('type', 'por dia')->min('id');
+                $ticket->rate_id = $rateDay;
+                $ticket->save();
+
+                $ticket->load('rate');
+            }
+
+            $type = $ticket->rate->type;
+            $name = $ticket->rate->name;
+
+            if ($type === 'por hora') {
+                $grace = match (true) {
+                    $calcHours >= 1 && $calcHours <= 8 => 10,
+                    $calcHours >= 9 && $calcHours <= 18 => 15,
+                    $calcHours >= 19 && $calcHours <= 23 => 20,
+                    default => 15,
+                };
+
+                if ($calcMinutes > $grace) {
+                    $calcHours += 1;
+                } else {
+                    $calcHours = $calcHours == 0 ? 1 : $calcHours;
+                }
+
+                $rate = Rate::where('type', 'por hora')
+                    ->where('name', $name)
+                    ->where('quantity', $calcHours)
+                    ->first();
+            } elseif ($type === 'por dia') {
+                if ($diffMinutes > $ticket->rate->grace_period_minutes) {
+                    $calcDays += 1;
+                } else {
+                    $calcDays = $calcDays == 0 ? 1 : $calcDays;
+                }
+
+                $rate = Rate::where('type', 'por dia')
+                    ->where('name', $name)
+                    ->where('quantity', $calcDays)
+                    ->first();
+            }
+
+            if ($rate) {
+                echo $totalAmount = "{$setting->currency} {$rate->cost}";
+            } else {
+                echo $totalAmount = "{$setting->currency} 0.00";
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('tickets.index')->with('error', 'No se pudo calcular el monto del ticket debido a un error: ' . $e->getMessage());
         }
     }
 }

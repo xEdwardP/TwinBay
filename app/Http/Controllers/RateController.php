@@ -56,6 +56,12 @@ class RateController extends Controller
     public function destroy(Rate $rate)
     {
         try {
+            $rate = Rate::withCount('tickets')->findOrFail($rate->id);
+
+            if ($rate->tickets_count > 0) {
+                return back()->with('error', 'No se puede eliminar esta tarifa porque tiene tickets asociados.');
+            }
+
             $rate->delete();
             return to_route('rates.index')->with('success', 'La tarifa se ha eliminado exitosamente!');
         } catch (\Exception $e) {

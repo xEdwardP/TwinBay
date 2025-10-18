@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+Route::get('/register', function(){
+    abort(403, 'Registro no permitido!');
+})->name('register');
+
 Route::redirect('/', 'login');
 Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name('home');
 

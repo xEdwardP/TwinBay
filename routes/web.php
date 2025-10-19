@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ParkingSpaceController;
 use App\Http\Controllers\RateController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TicketController;
@@ -109,4 +110,12 @@ Route::prefix('admin/invoices')->controller(InvoiceController::class)->middlewar
 // Analytics routes
 Route::prefix('admin/analytics')->controller(AnalyticController::class)->middleware('auth')->group(function () {
     Route::get('/', 'index')->name('analytics.index');
+});
+
+// Reports routes
+Route::prefix('admin/reports')->controller(ReportController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'index')->name('reports.index');
+    Route::get('/print/weekly_report', 'printWeeklyReport')->name('reports.weekly_report');
+    Route::get('/print/monthly_report', 'printMonthlyReport')->name('reports.monthly_report');
+    Route::get('/print/daily_report', 'printDailyReport')->name('reports.daily_report');
 });

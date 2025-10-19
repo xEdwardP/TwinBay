@@ -339,6 +339,11 @@ return [
             'route' => 'analytics.index',
             'icon' => 'fas fa-fw fa-chart-line',
         ],
+        [
+            'text' => 'reports',
+            'route' => 'reports.index',
+            'icon' => 'fas fa-fw fa-file-pdf',
+        ],
         ['header' => 'system_settings'],
         [
             'text' => 'settings',

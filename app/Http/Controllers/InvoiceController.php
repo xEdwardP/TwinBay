@@ -12,20 +12,6 @@ use Milon\Barcode\Facades\DNS2DFacade as DNS2D;
 
 class InvoiceController extends Controller
 {
-    public function index() {}
-
-    public function create() {}
-
-    public function store(Request $request) {}
-
-    public function show(Invoice $invoice) {}
-
-    public function edit(Invoice $invoice) {}
-
-    public function update(Request $request, Invoice $invoice) {}
-
-    public function destroy(Invoice $invoice) {}
-
     public function printInvoice($id)
     {
         try {

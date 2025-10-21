@@ -40,6 +40,9 @@ Route::prefix('admin/users')->controller(UserController::class)->middleware('aut
     Route::get('/show/{user}', 'show')->name('users.show');
     Route::delete('/destroy/{user}', 'destroy')->name('users.destroy');
     Route::post('/restore/{id}', 'restore')->name('users.restore');
+    Route::get('/profile', 'showProfile')->name('users.profile');
+    Route::put('/profile/update/{user}', 'updateProfile')->name('users.update_profile');
+    Route::put('/profile/change_password/{user}', 'changePassword')->name('users.change_password');
 });
 
 // Roles routes

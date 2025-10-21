@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdatePasswordRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UserRequest;
 use App\Mail\NewUserMail;
 use App\Models\User;
@@ -9,6 +11,8 @@ use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
 
@@ -60,9 +64,9 @@ class UserController extends Controller
 
             Mail::to($user->email)->send(new NewUserMail($user, $tempPassword));
 
-            return redirect()->route('users.index')->with('success', 'Usuario guardado con éxito!');
+            return redirect()->route('users.index')->with('success', '¡Usuario guardado con éxito!');
         } catch (\Exception $e) {
-            return redirect()->route('users.index')->with('error', 'No se pudo guardar el usuario: ' . $e->getMessage());
+            return redirect()->route('users.index')->with('error', 'No se pudo guardar el usuario debido a un error: ' . $e->getMessage());
         }
     }
 
@@ -108,7 +112,7 @@ class UserController extends Controller
             $user->save();
 
             $user->syncRoles($validated['role']);
-            return redirect()->route('users.index')->with('success', 'Cambios guardados con éxito!');
+            return redirect()->route('users.index')->with('success', '¡Cambios guardados con éxito!');
         } catch (\Exception $e) {
             return redirect()->route('users.index')->with('error', 'No se pudieron guardar los cambios debido a un error: ' . $e->getMessage());
         }
@@ -124,7 +128,7 @@ class UserController extends Controller
                 $user->is_active = false;
                 $user->save();
                 $user->delete();
-                return redirect()->route('users.index')->with('success', 'Usuario eliminado con éxito!');
+                return redirect()->route('users.index')->with('success', '¡Usuario eliminado con éxito!');
             }
         } catch (\Exception $e) {
             return redirect()->route('users.index')->with('error', 'No se pudo eliminar el usuario debido a un error: ' . $e->getMessage());
@@ -140,9 +144,70 @@ class UserController extends Controller
             $trashedUser->is_active = true;
             $trashedUser->save();
 
-            return redirect()->route('users.index')->with('success', 'Usuario restaurado con éxito!');
+            return redirect()->route('users.index')->with('success', '¡Usuario restaurado con éxito!');
         } catch (\Exception $e) {
-            return redirect()->route('users.index')->with('error', 'No se pudo restaurar el usuario: ' . $e->getMessage());
+            return redirect()->route('users.index')->with('error', 'No se pudo restaurar el usuario debido a un error: ' . $e->getMessage());
+        }
+    }
+
+    public function showProfile()
+    {
+        $user = Auth::user();
+
+        return view('admin.users.profile', [
+            'title' => 'Mi Perfil',
+            'user' => $user,
+            'roles' => Role::where('name', '!=', 'SUPER ADMIN')->get(),
+        ]);
+    }
+
+    public function updateProfile(UpdateProfileRequest $request, User $user)
+    {
+        try {
+            $validated = $request->validated();
+            $user = User::findOrFail($user->id);
+
+            $user->first_name = $validated['first_name'];
+            $user->last_name = $validated['last_name'];
+            $user->name = $validated['first_name'] . ' ' . $validated['last_name'];
+            $user->email = $validated['email'];
+            $user->document_type = $validated['document_type'];
+            $user->document_number = $validated['document_number'];
+            $user->phone = $validated['phone'];
+            $user->birthday = $validated['birthday'];
+            $user->genre = $validated['genre'];
+            $user->address = $validated['address'];
+
+            if ($request->hasFile('userphoto')) {
+                if ($user->userphoto && Storage::disk('public')->exists('users/' . $user->userphoto)) {
+                    Storage::disk('public')->delete('users/' . $user->userphoto);
+                }
+                $photoPath = $request->file('userphoto')->store('users', 'public');
+                $user->userphoto = basename($photoPath);
+            }
+
+            $user->contact_name = $validated['contact_name'];
+            $user->contact_phone = $validated['contact_phone'];
+            $user->contact_relationship = $validated['contact_relationship'];
+            $user->save();
+
+            return redirect()->route('users.profile')->with('success', '¡Perfil actualizado con éxito!');
+        } catch (\Exception $e) {
+            return redirect()->route('users.profile')->with('error', 'No se pudo actualizar el perfil debido a un error: ' . $e->getMessage());
+        }
+    }
+
+    public function changePassword(UpdatePasswordRequest $request, User $user)
+    {
+        try {
+            $user = User::findOrFail($user->id);
+            $user = $request->user();
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return redirect()->route('users.profile')->with('success', '¡La contraseña se ha actualizado con éxito!');
+        } catch (\Exception $e) {
+            return redirect()->route('users.profile')->with('error', 'No se pudo cambiar la contraseña debido a un error: ' . $e->getMessage());
         }
     }
 }

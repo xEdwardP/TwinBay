@@ -17,7 +17,7 @@
 
                             <div class="card-tools">
                                 <a href="{{ route('home') }}" class="btn btn-sm px-2">
-                                    <i class="fa-solid fa-arrow-left"></i>&nbsp;Volver
+                                    <i class="fa-solid fa-arrow-left text-black"></i>&nbsp;<span class="text-black">Volver</span>
                                 </a>
                             </div>
                         </div>

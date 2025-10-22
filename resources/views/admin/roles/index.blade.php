@@ -70,7 +70,7 @@
 
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center">
-                                            <a href="{{ route('roles.edit', $item) }}"
+                                            <a href="{{ route('roles.show_permissions', $item) }}"
                                                 class="btn btn-sm btn-info rounded-pill px-4 py-1" title="Asignar Permisos">
                                                 <i class="fa-solid fa-gear"></i>
                                             </a>

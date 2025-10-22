@@ -46,6 +46,12 @@ class VehicleController extends Controller
     public function destroy(Vehicle $vehicle)
     {
         try {
+            $vehicle = Vehicle::withCount('tickets', 'invoices')->findOrFail($vehicle->id);
+
+            if ($vehicle->tickets_count > 0 || $vehicle->invoices_count > 0) {
+                return redirect()->back()->with('error', 'No se puede eliminar el automóvil porque está asociado con uno o más tickets o facturas.');
+            }
+            
             $vehicle->delete();
             return redirect()->back()->with('success', 'El automóvil se ha eliminado exitosamente!');
         } catch (\Exception $e) {

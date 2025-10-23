@@ -110,6 +110,7 @@ Route::prefix('admin/tickets')->controller(TicketController::class)->middleware(
 
 // Invoices Routes
 Route::prefix('admin/invoices')->controller(InvoiceController::class)->middleware(['auth'])->group(function () {
+    Route::get('/', 'index')->name('invoices.index')->middleware('can:invoices.index');
     Route::get('/print/{invoice}', 'printInvoice')->name('invoices.print')->middleware('can:invoices.print');
 });
 

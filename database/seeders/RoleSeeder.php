@@ -58,7 +58,7 @@ class RoleSeeder extends Seeder
                 'print_ticket',
                 'calcAmount'
             ],
-            'invoices' => ['print'],
+            'invoices' => ['index','print'],
             'analytics' => ['index'],
             'reports' => ['index', 'weekly_report', 'monthly_report', 'daily_report'],
         ];

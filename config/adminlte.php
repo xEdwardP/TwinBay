@@ -340,6 +340,12 @@ return [
             'icon' => 'fas fa-fw fa-ticket-alt',
         ],
         [
+            'can' => 'invoices.index',
+            'text' => 'invoices',
+            'route' => 'invoices.index',
+            'icon' => 'fas fa-fw fa-file-invoice-dollar',
+        ],
+        [
             'can' => 'analytics.index',
             'text' => 'analytics',
             'route' => 'analytics.index',

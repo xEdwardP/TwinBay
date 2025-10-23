@@ -72,15 +72,15 @@
                                         <div class="d-flex justify-content-center">
                                             <a href="{{ route('roles.show_permissions', $item) }}"
                                                 class="btn btn-sm btn-info rounded-pill px-4 py-1" title="Asignar Permisos">
-                                                <i class="fa-solid fa-gear"></i>
+                                                <i class="fa-solid fa-gear"></i>Asignar Permisos
                                             </a>
                                             <a href="{{ route('roles.edit', $item) }}"
                                                 class="btn btn-sm btn-warning rounded-pill px-4 py-1 ml-2"
                                                 title="Editar Rol">
-                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                <i class="fa-solid fa-pen-to-square"></i>Editar
                                             </a>
                                             <x-ui.button.delete-button :action="route('roles.destroy', $item->id)" :item-id="$item->id"
-                                                title="Eliminar Rol" />
+                                                title="Eliminar Rol" label="Eliminar" />
                                         </div>
                                     </td>
                                 </tr>

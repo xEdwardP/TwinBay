@@ -12,11 +12,20 @@ use Milon\Barcode\Facades\DNS2DFacade as DNS2D;
 
 class InvoiceController extends Controller
 {
+    public function index()
+    {
+        return view('admin.invoices.index', [
+            'title' => 'Listado de facturas',
+            'invoices' => Invoice::with('customer', 'vehicle')->latest('id')->get(),
+            'setting' => Setting::first(),
+        ]);
+    }
+
     public function printInvoice($id)
     {
         try {
             $invoice = Invoice::with('customer', 'vehicle')->findOrFail($id);
-            
+
             $codeQR = "Esta factura # {$invoice->invoice_number} corresponde al cliente: {$invoice->customer->name} "
                 . "con numero de documento: {$invoice->customer->document_number}, "
                 . "con la placa del vehiculo: {$invoice->vehicle->license_plate}, "
